@@ -1,0 +1,65 @@
+1. passport란?
+2. 로그인 방법을 확장할 수 있다.
+- 전략(stragey)들로 google, facebook 등 여러가지 로그인을 할 수 있다.
+
+1. 인증 토큰, 재발급 토큰
+    - 인증 토큰, 유저의 정보가 암호화 된 토큰을 의미하며, 해당 토큰이 있어야 해당 사용자는 인증된 사용자로 인식하여
+    정보를 응답받을 수 있다.
+    - 보통 해당 인증 토큰이 없다면 response status code 401 (unauthorized)
+    - 토큰이 있지만 허가되지 않은 사용자는 response status code 403 (forbidden)
+    - 따라서 해당 토큰이 만료되면 401, 403을 retrun
+    - 프론트 엔드 개발자가 401과 403 비동기 통신의 응답 결과로 반환을 받는다면 아래 로직을 실행한다
+    - 1) refresh token이 있는경우
+        - refresh token으로 access token을 재발급 받고 실패한 요청을 재 요청한다
+        
+        2) refresh token이 만료 된 경우
+        
+        - refresh token이 만료 후 로그아웃 로직을 실행한다.
+        
+        JWT 토큰이란?
+        
+        - JWT(Json Web Token)은 Json 객체에 인증에 필요한 정보들을 담은 후 비밀키로 서명한 토큰으로, [인터넷 표준 인증 방식   ](https://datatracker.ietf.org/doc/html/rfc7519)이다. 공식적으로 **인증(Authentication) &    권한허가(Authorization)** 방식으로 사용된다.
+
+1. 토큰을 관리할 수 있는 방법
+    
+    1) 웹 스토리지란?
+    
+    - 브라우저를 통해 데이터를 저장하고, DB에 저장되는 데이터와 달리 삭제되어도 상관 없는 소량의 데이터를 저장할 때 사용한다. 즉    사용자에게 데이터 저장을 부담시킨다.
+    
+    - 로컬 스토리지
+        - 영구적으로 저장이 가능한 스토리지
+        - 다른 탭에서도 데이터가 공유되는 특징을 가지고 있다.
+        - 웹 페이지의 세션이 끝나도 데이터가 삭제되지 않는다.
+    - 세션 스토리지
+        - 웹 페이지의 세션이 끝나면 데이터가 함께 삭제된다.
+        - 다른 탭에서 데이터가 격리되어 저장되는 특징을 가진다.
+    
+    2) 사용 방법
+    
+    - localstorage, sessionstorage
+        - .setItem(key, value) : 해당 key, value 쌍으로 저장한다.
+        - .getItem(key) : 해당key를 조회한다.
+        - .removeItem(key) : 해당 key를 삭제한다
+        - .clear() : 모든 데이터를 삭제한다.
+    
+    2) 쿠키
+    
+    - 브라우저에 저장된 key-value로 이루어진 작은 데이터의 파일이다
+    - 따로 설정하지 않아도 서와의 데이터 교환이 가능하며
+    - http나 secure 옵션을 통해 http 환경에서만 교환이 가능하거나 외부에서 접근이 불가능한 설정이 가능하다.
+    - 쿠키를 이용해서 사용하는 로직들은
+        - refresh-token
+        - session-id
+        - 자동 로그인 등..
+        - 팝업 몇일동일 보지 않기.
+    
+    1. token을 백엔드에서 프론트로 전달하는 방법
+        - res.body
+        - res.header
+        - cookies
+        
+    2. token을 프론트에서 백엔드로 전달하는 방법
+        - req.body
+        - cookies
+            - withCredential
+        - res.header
